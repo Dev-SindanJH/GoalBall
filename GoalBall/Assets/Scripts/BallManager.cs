@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class BallManager : MonoBehaviour
 {
+    [SerializeField] int WallCount;
     public float power = 1f;
     public LineRenderer lineRenderer;
     Vector3 pos_Input;
@@ -29,14 +30,23 @@ public class BallManager : MonoBehaviour
     public IEnumerator IEVelocity()
     {
         yield return new WaitUntil(()=>rigid.velocity.sqrMagnitude >0f);
-        while(rigid.velocity.sqrMagnitude>10f)
+        while(rigid.velocity.sqrMagnitude>2f)
         {
             //UIManager.Instance.SetSliderValue(rigid.velocity.sqrMagnitude / 100f);
             //Debug.Log(rigid.velocity.sqrMagnitude);
             yield return null;
         }
+        GameManager.Instance.GameOver();
     }
-
+    int curBreakWall = 0;
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Wall")
+        {
+            curBreakWall++;
+            UIManager.Instance.SetSliderValue(curBreakWall / (float)WallCount);
+        }
+    }
     public void OnMouseDown()
     {
         if(canTouch)
@@ -70,10 +80,10 @@ public class BallManager : MonoBehaviour
         {
             isTouched = false;
             Vector3 dir = (pos_drag - pos_Input);
-            Debug.Log(dir);
             rigid.AddForce(-dir * power);
             lineRenderer.enabled = false;
             mouseDown = false;
+            GameManager.Instance.IsPlaying = true;
             StartCoroutine(IEVelocity());
         }
 

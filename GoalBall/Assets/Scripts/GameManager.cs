@@ -32,17 +32,42 @@ public class GameManager : MonoBehaviour
             return curStage;
         }
     }
+    private bool isPlaying = false;
+    public bool IsPlaying
+    {
+        get
+        {
+            return isPlaying; 
+        }
+        set
+        {
+            isPlaying = value;
+        }
+    }
     private void Start()
     {
         curStage = PlayerPrefs.GetInt("LastStage", 1);
-        Debug.Log(curStage);
     }
     public void StageClear()
     {
-        UIManager.Instance.PopOnClear();
-        if(PlayerPrefs.GetInt("LastStage") < curStage)
+        if (isPlaying)
         {
-            PlayerPrefs.SetInt("LastStage", curStage + 1);
+            isPlaying = false;
+            UIManager.Instance.PopOnClear();
+            if (PlayerPrefs.GetInt("LastStage") < curStage)
+            {
+                PlayerPrefs.SetInt("LastStage", curStage + 1);
+            }
+        }
+
+
+    }
+    public void GameOver()
+    {
+        if(isPlaying)
+        {
+            isPlaying = false;
+            UIManager.Instance.PopOnGameOver();
         }
     }
 }
