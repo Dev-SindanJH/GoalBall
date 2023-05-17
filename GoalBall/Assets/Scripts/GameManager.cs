@@ -70,5 +70,10 @@ public class GameManager : MonoBehaviour
             UIManager.Instance.PopOnGameOver();
         }
     }
+
+    public void GameStart()
+    {
+
+    }
 }
 
