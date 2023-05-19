@@ -18,6 +18,11 @@ public class UIManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(this);
         }
     }
     [SerializeField] private GameObject go_Pop_Clear;

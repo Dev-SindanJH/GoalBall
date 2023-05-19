@@ -26,8 +26,13 @@ public class StageManager : MonoBehaviour
     {
         instance = null;
     }
-    public void MakeStage(int _stageNum)
+    private void Start()
     {
-        Instantiate(go_stagePrefabs[_stageNum], tr_stageParent);
+        MakeStage();
+    }
+    public void MakeStage()
+    {
+        Instantiate(go_stagePrefabs[2], tr_stageParent);
+        //Instantiate(go_stagePrefabs[], tr_stageParent);
     }
 }

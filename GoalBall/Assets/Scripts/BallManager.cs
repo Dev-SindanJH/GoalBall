@@ -30,7 +30,7 @@ public class BallManager : MonoBehaviour
     public IEnumerator IEVelocity()
     {
         yield return new WaitUntil(()=>rigid.velocity.sqrMagnitude >0f);
-        while(rigid.velocity.sqrMagnitude>2f)
+        while(rigid.velocity.sqrMagnitude>1f)
         {
             //UIManager.Instance.SetSliderValue(rigid.velocity.sqrMagnitude / 100f);
             //Debug.Log(rigid.velocity.sqrMagnitude);
