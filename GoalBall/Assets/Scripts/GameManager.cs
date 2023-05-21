@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using Sirenix.OdinInspector;
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance;
@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
             Destroy(this);
         }
     }
-    private int curStage;
+    [SerializeField,ReadOnly] private int curStage;
     public int CurStage
     {
         get
@@ -47,21 +47,20 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        curStage = PlayerPrefs.GetInt("LastStage", 1);
+        curStage = PlayerPrefsManager.LastStage;
+        //curStage = PlayerPrefs.GetInt("LastStage", 1);
     }
     public void StageClear()
     {
         if (isPlaying)
         {
             isPlaying = false;
-            UIManager.Instance.PopOnClear();
-            if (PlayerPrefs.GetInt("LastStage") < curStage)
+            PlayerPrefsManager.SetStarCount(CurStage, UIManager.Instance.GetStar());
+            if (PlayerPrefsManager.LastStage == curStage)
             {
-                PlayerPrefs.SetInt("LastStage", curStage + 1);
+                PlayerPrefsManager.LastStage = CurStage + 1;
             }
         }
-
-
     }
     public void GameOver()
     {
@@ -72,9 +71,37 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GameStart()
+    public void StartGame(int _stageNum=0)
     {
+        if(_stageNum!=0)
+        {
+            curStage = _stageNum;
+        }
         SceneManager.LoadScene("GameScene");
+
     }
+    public void StartNextStage()
+    {
+        curStage++;
+        StartGame();
+    }
+    public void StartRetry()
+    {
+        StartGame();
+    }
+    public void GoToTitle()
+    {
+        SceneManager.LoadScene("TitleScene");
+    }
+    //============================ForDevelope============================
+#if UNITY_EDITOR
+    [Button("Reset LastStage")]
+    public void ResetStage()
+    {
+        PlayerPrefsManager.LastStage = 1;
+        curStage = PlayerPrefsManager.LastStage;
+        SceneManager.LoadScene("TitleScene");
+    }
+#endif
 }
 

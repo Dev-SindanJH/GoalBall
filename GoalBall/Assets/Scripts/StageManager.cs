@@ -14,7 +14,8 @@ public class StageManager : MonoBehaviour
     }
     
     [SerializeField] Transform tr_stageParent;
-    [SerializeField] GameObject[] go_stagePrefabs;
+    GameObject go_prefab;
+    //[SerializeField] GameObject[] go_stagePrefabs;
     private void Awake()
     {
         if(instance == null)
@@ -30,9 +31,12 @@ public class StageManager : MonoBehaviour
     {
         MakeStage();
     }
+
     public void MakeStage()
     {
-        Instantiate(go_stagePrefabs[2], tr_stageParent);
+        go_prefab = Resources.Load<GameObject>($"Prefabs/Stages/Stage{GameManager.Instance.CurStage}");
+        Instantiate(go_prefab, tr_stageParent);
         //Instantiate(go_stagePrefabs[], tr_stageParent);
     }
+
 }

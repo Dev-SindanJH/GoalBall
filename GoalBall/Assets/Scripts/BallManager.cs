@@ -1,41 +1,49 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
-
+using ExpandFunction;
 public class BallManager : MonoBehaviour
 {
     [SerializeField] int WallCount;
-    public float power = 1f;
+
     public LineRenderer lineRenderer;
     Vector3 pos_Input;
     Rigidbody2D rigid;
     bool canTouch = true;
     bool isTouched = false;
+
+    float baseHeight = 720f;  // 기준 높이
+    float baseWidth = 1280f;  // 기준 너비
+    float forceScale;
     private void Awake()
     {
         rigid = transform.GetComponent<Rigidbody2D>();
-    }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene(0);
-        }    
-
+        //float resolutionRatio = Screen.height / baseHeight;  // 해상도 비율
+        //forceScale = resolutionRatio * (baseWidth / Screen.width) * 0.3f;
     }
     public IEnumerator IEVelocity()
     {
         yield return new WaitUntil(()=>rigid.velocity.sqrMagnitude >0f);
-        while(rigid.velocity.sqrMagnitude>1f)
+        // 만약 시작벨류가 0.7이야, 그러면 0.7 : velocity
+        // startVelocity : startValue = current_velocity : currentValue
+        // currentValue = current_velocity*startValue / startVelocity
+        float startVelocity = rigid.velocity.sqrMagnitude;
+        float startValue = UIManager.Instance.GetValue_PowerSlider();
+        System.Diagnostics.Stopwatch stopwatch = new();
+        stopwatch.Start();
+        while (rigid.velocity.sqrMagnitude>0.1f)
         {
+            UIManager.Instance.SetValue_PowerSlider(rigid.velocity.sqrMagnitude * startValue / startVelocity);
+            //UIManager.Instance.SetValue_PowerSlider(rigid.velocity.sqrMagnitude);
             //UIManager.Instance.SetSliderValue(rigid.velocity.sqrMagnitude / 100f);
             //Debug.Log(rigid.velocity.sqrMagnitude);
             yield return null;
         }
+        stopwatch.Stop();
+        Debug.Log(stopwatch.ElapsedMilliseconds+"ms");
+        UIManager.Instance.SetValue_PowerSlider(rigid.velocity.sqrMagnitude * startValue / startVelocity);
+
         GameManager.Instance.GameOver();
     }
     int curBreakWall = 0;
@@ -62,6 +70,14 @@ public class BallManager : MonoBehaviour
     }
     bool mouseDown = false;
     Vector3 pos_drag;
+    public void ClearAct(Vector2 pos_Goal)
+    {
+        RectTransform rt = transform.GetComponent<RectTransform>();
+        rigid.velocity = Vector2.zero;
+        StartCoroutine(rt.IE_SetScale(Vector3.zero, 0.2f));
+        StartCoroutine(rt.IE_MoveRect(pos_Goal, 0.2f));
+    }
+
 
     IEnumerator IEDrag()
     {
@@ -69,7 +85,7 @@ public class BallManager : MonoBehaviour
         {
             pos_drag = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, 10f)) - transform.position;
             pos_drag = Vector2.ClampMagnitude(pos_drag, 2.5f);
-            
+            UIManager.Instance.SetValue_PowerSlider(pos_drag.magnitude/2.5f);
             lineRenderer.SetPosition(1, -pos_drag);
             yield return null;
         }
@@ -80,10 +96,12 @@ public class BallManager : MonoBehaviour
         {
             isTouched = false;
             Vector3 dir = (pos_drag - pos_Input);
-            rigid.AddForce(-dir * power);
+            rigid.AddForce(-dir);
+
             lineRenderer.enabled = false;
             mouseDown = false;
             GameManager.Instance.IsPlaying = true;
+            UIManager.Instance.StartShoot();
             StartCoroutine(IEVelocity());
         }
 
