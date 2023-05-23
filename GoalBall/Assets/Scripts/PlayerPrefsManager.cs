@@ -26,4 +26,22 @@ public static class PlayerPrefsManager
             PlayerPrefs.SetInt($"Stage{_stageNum}_star", _starCount);
         }
     }
+    public static bool SoundOn
+    {
+        get
+        {
+            return PlayerPrefs.GetInt("SoundOn", 1) == 1;
+        }
+        set
+        {
+            if(value)
+            {
+                PlayerPrefs.SetInt("SoundOn", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("SoundOn", 0);
+            }
+        }
+    }
 }

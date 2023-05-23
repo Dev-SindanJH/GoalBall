@@ -41,7 +41,6 @@ public class BallManager : MonoBehaviour
             yield return null;
         }
         stopwatch.Stop();
-        Debug.Log(stopwatch.ElapsedMilliseconds+"ms");
         UIManager.Instance.SetValue_PowerSlider(rigid.velocity.sqrMagnitude * startValue / startVelocity);
 
         GameManager.Instance.GameOver();
@@ -92,18 +91,21 @@ public class BallManager : MonoBehaviour
     }
     public void OnMouseUp()
     {
-        if(isTouched)
+        if (isTouched)
         {
             isTouched = false;
-            Vector3 dir = (pos_drag - pos_Input);
-            rigid.AddForce(-dir);
+            Vector2 dir = (pos_drag - pos_Input);
+            if(dir.sqrMagnitude == 0)
+            {
+                dir = Vector2.one * UnityEngine.Random.Range(-1f, 1f);
+            }
 
+            rigid.AddForce(-dir);
             lineRenderer.enabled = false;
             mouseDown = false;
             GameManager.Instance.IsPlaying = true;
             UIManager.Instance.StartShoot();
             StartCoroutine(IEVelocity());
         }
-
     }
 }
