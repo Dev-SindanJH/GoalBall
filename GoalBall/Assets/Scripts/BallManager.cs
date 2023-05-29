@@ -35,9 +35,6 @@ public class BallManager : MonoBehaviour
         while (rigid.velocity.sqrMagnitude>0.1f)
         {
             UIManager.Instance.SetValue_PowerSlider(rigid.velocity.sqrMagnitude * startValue / startVelocity);
-            //UIManager.Instance.SetValue_PowerSlider(rigid.velocity.sqrMagnitude);
-            //UIManager.Instance.SetSliderValue(rigid.velocity.sqrMagnitude / 100f);
-            //Debug.Log(rigid.velocity.sqrMagnitude);
             yield return null;
         }
         stopwatch.Stop();
@@ -51,6 +48,7 @@ public class BallManager : MonoBehaviour
         if(collision.gameObject.tag == "Wall")
         {
             curBreakWall++;
+            SoundManager.Instance.PlayOneShot("Sound_Ball");
             UIManager.Instance.SetSliderValue(curBreakWall / (float)WallCount);
         }
     }
@@ -83,9 +81,9 @@ public class BallManager : MonoBehaviour
         while (mouseDown)
         {
             pos_drag = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, 10f)) - transform.position;
-            pos_drag = Vector2.ClampMagnitude(pos_drag, 2.5f);
-            UIManager.Instance.SetValue_PowerSlider(pos_drag.magnitude/2.5f);
-            lineRenderer.SetPosition(1, -pos_drag);
+            pos_drag = Vector2.ClampMagnitude(pos_drag, 1.5f);
+            UIManager.Instance.SetValue_PowerSlider(pos_drag.magnitude/1.5f);
+            lineRenderer.SetPosition(1, -pos_drag*1.5f);
             yield return null;
         }
     }
@@ -100,7 +98,7 @@ public class BallManager : MonoBehaviour
                 dir = Vector2.one * UnityEngine.Random.Range(-1f, 1f);
             }
 
-            rigid.AddForce(-dir);
+            rigid.AddForce(-dir*1.5f);
             lineRenderer.enabled = false;
             mouseDown = false;
             GameManager.Instance.IsPlaying = true;

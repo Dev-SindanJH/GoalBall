@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PortalWall : SpecialWallManager
+public class MudWall : SpecialWallManager
 {
-    [SerializeField] RectTransform rt_Enter;
-    [SerializeField] RectTransform rt_Exit;
     public override void TriggerEnter(Collider2D collision)
     {
-        collision.GetComponent<RectTransform>().anchoredPosition = rt_Exit.anchoredPosition;
+        collision.GetComponent<Rigidbody2D>().velocity *= 0.7f;
     }
 
     public override void TriggerStay(Collider2D collision)

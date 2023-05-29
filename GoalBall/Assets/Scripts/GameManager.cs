@@ -95,10 +95,10 @@ public class GameManager : MonoBehaviour
     }
     //============================ForDevelope============================
 #if UNITY_EDITOR
-    [Button("Reset LastStage")]
+    [Button("Reset PlayerPrefs")]
     public void ResetStage()
     {
-        PlayerPrefsManager.LastStage = 1;
+        PlayerPrefsManager.DeleteAllData();
         curStage = PlayerPrefsManager.LastStage;
         SceneManager.LoadScene("TitleScene");
     }

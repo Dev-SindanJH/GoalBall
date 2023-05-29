@@ -33,7 +33,7 @@ public class StageManager : MonoBehaviour
     }
 
     public void MakeStage()
-    {
+    {        
         go_prefab = Resources.Load<GameObject>($"Prefabs/Stages/Stage{GameManager.Instance.CurStage}");
         Instantiate(go_prefab, tr_stageParent);
         //Instantiate(go_stagePrefabs[], tr_stageParent);

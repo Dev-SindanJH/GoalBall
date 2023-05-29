@@ -27,7 +27,7 @@ public class UIManager : MonoBehaviour
     }
     [SerializeField] private GameObject go_Pop_Stage;
     [SerializeField] private GameObject go_Pop_GameOver;
-    
+    [SerializeField] private TextMeshProUGUI text_curStage;
     [Header("StarSlider")]
     [SerializeField] private Slider slider_star;
     [SerializeField] private Animator[] anim_sliderStars;
@@ -50,9 +50,14 @@ public class UIManager : MonoBehaviour
         }
     }
 #endif
+    private void Start()
+    {
+        SeTextStage();
+    }
     public void PopOnClear()
     {
         go_Pop_StageClear.SetActive(true);
+        SoundManager.Instance.PlayOneShot("Sound_Clear");
         text_CompleteStage.text = $"<size=100>Stage {GameManager.Instance.CurStage}</size>\nCompleted!";
         for (int i=0; i<3; i++)
         {
@@ -128,5 +133,9 @@ public class UIManager : MonoBehaviour
     public float GetValue_PowerSlider()
     {
         return slider_Power.value;
+    }
+    public void SeTextStage()
+    {
+        text_curStage.text = $"Stage {GameManager.Instance.CurStage}";
     }
 }

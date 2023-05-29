@@ -25,4 +25,9 @@ public class TriggerKey : SpecialWallManager
             goal.UnLock();
         }
     }
+
+    public override void TriggerStay(Collider2D collision)
+    {
+        throw new System.NotImplementedException();
+    }
 }

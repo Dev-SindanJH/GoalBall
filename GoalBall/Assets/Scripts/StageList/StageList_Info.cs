@@ -27,13 +27,19 @@ public class StageList_Info : MonoBehaviour
             text_StageNum.text = $"Stage {stageNum}";
         }
         
-        // Clear
-        if(PlayerPrefsManager.GetStarCount(stageNum) > 0)
+        if(stageNum <= PlayerPrefsManager.LastStage)
         {
             btn_startStage.interactable = true;
             go_StartSet.SetActive(true);
             go_Lock.SetActive(false);
         }
+        //// Clear
+        //if(PlayerPrefsManager.GetStarCount(stageNum) > 0)
+        //{
+        //    btn_startStage.interactable = true;
+        //    go_StartSet.SetActive(true);
+        //    go_Lock.SetActive(false);
+        //}
         else
         {
             btn_startStage.interactable = false;

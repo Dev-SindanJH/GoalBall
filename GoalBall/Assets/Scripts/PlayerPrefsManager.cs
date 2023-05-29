@@ -62,4 +62,11 @@ public static class PlayerPrefsManager
             }
         }
     }
+
+#if UNITY_EDITOR
+    public static void DeleteAllData()
+    {
+        PlayerPrefs.DeleteAll();
+    }
+#endif
 }
